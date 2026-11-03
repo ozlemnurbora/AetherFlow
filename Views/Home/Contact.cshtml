@@ -1,0 +1,72 @@
+﻿@model AetherFlow.Models.ContactMessage
+
+@{
+    ViewBag.Title = "Contact";
+}
+
+<main class="page-transition">
+    <section class="contact">
+        <div class="container">
+            <h2>Contact</h2>
+            <p class="sub">Questions, ideas, feedback—drop us a line.</p>
+
+            <div class="contact-grid single">
+                <div class="card-box">
+
+                    @*  *@
+                    @if (TempData["Success"] != null)
+                    {
+                        <div style="background:#e0f2fe;border:1px solid #7dd3fc;
+                                    padding:12px;border-radius:10px;
+                                    margin-bottom:15px;color:#075985;font-weight:600;">
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Contact", "Home", FormMethod.Post, new { @class = "contact-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-row">
+                            <label>Name *</label>
+                            @Html.TextBoxFor(m => m.Name, new
+                            {
+                                placeholder = "Your name",
+                                required = "required"
+                            })
+                            @Html.ValidationMessageFor(m => m.Name)
+                        </div>
+
+                        <div class="form-row">
+                            <label>Email *</label>
+                            @Html.TextBoxFor(m => m.Email, new
+                            {
+                                type = "email",
+                                placeholder = "you@example.com",
+                                required = "required"
+                            })
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </div>
+
+                        <div class="form-row">
+                            <label>Message *</label>
+                            @Html.TextAreaFor(m => m.Message, new
+                            {
+                                placeholder = "Write your message…",
+                                required = "required",
+                                rows = 4
+                            })
+                            @Html.ValidationMessageFor(m => m.Message)
+                        </div>
+
+                        <button type="submit">Send Message</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

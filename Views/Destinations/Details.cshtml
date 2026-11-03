@@ -1,0 +1,230 @@
+﻿@model AetherFlow.Models.Destination
+@using System
+
+@{
+    ViewBag.Title = "Tour Details";
+    var img = string.IsNullOrEmpty(Model.ImageUrl)
+        ? Url.Content("~/Content/images/default.jpg")
+        : Url.Content("~/Content/images/" + Model.ImageUrl);
+}
+
+<style>
+    .tour-wrap {
+        max-width: 1100px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+
+    .tour-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.10);
+    }
+
+    .tour-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 0;
+    }
+
+    .tour-img {
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .tour-body {
+        padding: 24px;
+    }
+
+    .tour-title {
+        font-size: 32px;
+        margin: 0 0 6px;
+        font-weight: 800;
+    }
+
+    .tour-sub {
+        color: #6b7280;
+        margin: 0 0 16px;
+    }
+
+    .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 10px 0 18px;
+    }
+
+    .badge {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 13px;
+        color: #111827;
+    }
+
+        .badge.pop {
+            background: #e0f2fe;
+        }
+
+        .badge.price {
+            background: #16a34a;
+            border-color: #15803d;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 6px 14px rgba(22,163,74,.25);
+        }
+
+    .kv {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 10px 14px;
+        margin-top: 16px;
+    }
+
+    .k {
+        color: #6b7280;
+        font-weight: 700;
+    }
+
+    .v {
+        color: #111827;
+        font-weight: 600;
+    }
+
+    .desc {
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 1px solid #eef2f7;
+    }
+
+        .desc h4 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .desc p {
+            margin: 0;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+        align-items: center;
+    }
+
+    .btnx {
+        display: inline-block;
+        padding: 10px 14px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .btn-primaryx {
+        background: #0ea5e9;
+        color: white;
+        border: none;
+    }
+
+    .btn-secondaryx {
+        background: #f3f4f6;
+        color: #111827;
+    }
+
+    @@media (max-width: 900px) {
+        .tour-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .tour-img {
+            min-height: 280px;
+        }
+
+        .kv {
+            grid-template-columns: 130px 1fr;
+        }
+    }
+</style>
+
+<div class="tour-wrap">
+    <div class="tour-card">
+        <div class="tour-grid">
+            <div>
+                <img class="tour-img" src="@img" alt="@Model.TourName" />
+            </div>
+
+            <div class="tour-body">
+                <h1 class="tour-title">@Model.TourName</h1>
+                <p class="tour-sub">@Model.CityName</p>
+
+                <div class="badges">
+                    <span class="badge">@Model.Duration</span>
+                    <span class="badge">@Model.Transportation</span>
+                    <span class="badge price">$@Model.Price.ToString("0.00")</span>
+                    <span class="badge">Capacity: @Model.Capacity</span>
+                    @if (Model.IsPopular)
+                    {
+                        <span class="badge pop">Popular</span>
+                    }
+                </div>
+
+                <div class="kv">
+                    <div class="k">Meeting Point</div>
+                    <div class="v">@Model.MeetingPoint</div>
+
+                    <div class="k">Start Date</div>
+                    <div class="v">@Model.StartDate.ToString("dd/MM/yyyy")</div>
+
+                    <div class="k">End Date</div>
+                    <div class="v">@Model.EndDate.ToString("dd/MM/yyyy")</div>
+
+                    <div class="k">What's Included</div>
+                    <div class="v">@Model.WhatsIncluded</div>
+                </div>
+
+                <div class="desc">
+                    <h4>Description & Itinerary</h4>
+                    <p>@Model.Description</p>
+                </div>
+
+                <div class="actions">
+                    @using (Html.BeginForm("Add", "Cart", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <label style="font-weight:700; margin:0;">People</label>
+
+                            <select name="qty" class="form-control" style="width:90px; border-radius:10px;">
+                                @for (int i = 1; i <= Math.Min(Model.Capacity, 10); i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+
+                            <button class="btnx btn-primaryx" type="submit">Add to Cart</button>
+                        </div>
+                    }
+
+                    <a class="btnx btn-secondaryx"
+                       href="@Url.Action("Browse","Destinations", new { city = Model.CityName })">
+                        Back to Tours
+                    </a>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+</div>

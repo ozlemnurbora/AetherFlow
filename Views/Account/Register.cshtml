@@ -1,0 +1,55 @@
+﻿@model AetherFlow.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<main class="page-transition">
+    <section class="contact" style="min-height: 80vh; display: flex; align-items: center;">
+        <div class="container">
+
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="font-weight: 800; color: #023E8A;">Join AetherFlow</h2>
+                <p class="sub" style="opacity: 0.8;">Create an account to start your journey.</p>
+            </div>
+
+            <div class="contact-grid single" style="max-width: 500px; margin: 0 auto;">
+
+                <div class="card-box">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "contact-form", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary("", new { @class = "text-danger", style = "color: red; margin-bottom: 15px; list-style: none; font-size: 0.9rem;" })
+
+                        <div class="form-row">
+                            @Html.LabelFor(m => m.Email, new { style = "font-weight: 600; margin-bottom: 5px;" })
+                            @Html.TextBoxFor(m => m.Email, new { placeholder = "name@example.com" })
+                        </div>
+
+                        <div class="form-row">
+                            @Html.LabelFor(m => m.Password, new { style = "font-weight: 600; margin-bottom: 5px;" })
+                            @Html.PasswordFor(m => m.Password, new { placeholder = "Create a password" })
+                        </div>
+
+                        <div class="form-row">
+                            @Html.LabelFor(m => m.ConfirmPassword, new { style = "font-weight: 600; margin-bottom: 5px;" })
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm your password" })
+                        </div>
+
+                        <div class="form-row" style="margin-top: 10px;">
+                            <button type="submit">Register</button>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+                            Already have an account? <a href="@Url.Action("Login", "Account")" style="color: #0077B6; font-weight: 600; text-decoration: none;">Log in</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

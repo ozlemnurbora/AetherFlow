@@ -1,0 +1,21 @@
+﻿@model List<AetherFlow.Models.Destination>
+@{
+    ViewBag.Title = "All Destinations";
+}
+
+<div class="container" style="padding:30px 0;">
+    <h2>All Destinations</h2>
+    <p>Choose a city to see available tours.</p>
+
+    <div class="cards">
+        @foreach (var item in Model)
+        {
+            <a class="card"
+               href="@Url.Action("Browse", "Destinations", new { city = item.CityName })"
+               style="text-decoration:none; color:inherit;">
+                <img alt="@item.CityName" src="@Url.Content("~/Content/images/" + item.ImageUrl)" />
+                <h4>@item.CityName</h4>
+            </a>
+        }
+    </div>
+</div>

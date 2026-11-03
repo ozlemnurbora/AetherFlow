@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Payment Successful";
+}
+
+<div class="container" style="padding:30px 0; max-width:820px;">
+    <h2>Payment Successful ✅</h2>
+    <p>Order ID: <b>@Session["LAST_ORDER_ID"]</b></p>
+    <p>Name: <b>@Session["LAST_ORDER_NAME"]</b></p>
+    <p>Email: <b>@Session["LAST_ORDER_EMAIL"]</b></p>
+    <p>Card: **** **** **** <b>@Session["LAST_ORDER_CARD"]</b></p>
+    <p>Total Paid: <b>₺@Session["LAST_ORDER_TOTAL"]</b></p>
+
+    <a class="btn btn-primary" href="@Url.Action("Index","Home")">Back Home</a>
+</div>

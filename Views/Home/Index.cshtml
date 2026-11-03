@@ -1,0 +1,140 @@
+﻿@model List<AetherFlow.Models.Destination>
+@{
+    ViewBag.Title = "Home Page";
+    var otherCities = ViewBag.OtherCities as List<AetherFlow.Models.Destination>;
+}
+
+<section class="hero">
+    <div class="inner container">
+        <h2>Fly lighter. Travel smarter.</h2>
+        <p>Experience fluid, effortless journeys powered by AetherFlow.</p>
+
+        <form aria-label="Quick trip search"
+              class="search-panel"
+              method="get"
+              action="/Destinations/Browse"
+              role="search">
+            <input name="city" placeholder="Where to?" type="text" />
+            <input name="from" id="qFrom" type="text" placeholder="dd/mm/yyyy" />
+            <input name="to" id="qTo" type="text" placeholder="dd/mm/yyyy" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</section>
+
+<main>
+    <!-- Popular Destinations -->
+    <section class="destinations container page-transition">
+        <h3>Popular Destinations</h3>
+
+        <div class="cards">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <a class="card"
+                       href="@Url.Action("Browse", "Destinations", new { city = item.CityName })"
+                       style="text-decoration:none; color:inherit;">
+                        <img alt="@item.CityName" src="@Url.Content("~/Content/images/" + item.ImageUrl)" />
+                        <h4>@item.CityName</h4>
+                    </a>
+                }
+            }
+            else
+            {
+                <p>No popular destinations found.</p>
+            }
+        </div>
+    </section>
+
+    <!-- Other Destinations -->
+    <section class="destinations container page-transition" style="margin-top:30px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>Other Destinations</h3>
+            <a href="@Url.Action("AllCities","Destinations")" style="font-weight:700;">See all</a>
+        </div>
+
+        <div class="cards">
+            @if (otherCities != null && otherCities.Any())
+            {
+                foreach (var item in otherCities.Take(5))
+                {
+                    <a class="card"
+                       href="@Url.Action("Browse", "Destinations", new { city = item.CityName })"
+                       style="text-decoration:none; color:inherit;">
+                        <img alt="@item.CityName" src="@Url.Content("~/Content/images/" + item.ImageUrl)" />
+                        <h4>@item.CityName</h4>
+                    </a>
+                }
+            }
+            else
+            {
+                <p>No other destinations found.</p>
+            }
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="about colorful">
+        <div class="container">
+            <h2>Why AetherFlow?</h2>
+            <p>
+                “Aether” evokes the sky &amp; lightness; “Flow” stands for seamless motion.
+                We blend both to deliver smooth, delightful travel experiences.
+            </p>
+
+            <div class="values">
+                <div class="value-card">
+                    <img alt="Lightweight" src="@Url.Content("~/Content/images/icon-light.svg")" />
+                    <h4>Lightweight</h4>
+                    <p>Faster booking, fewer clicks—no clutter, no friction.</p>
+                </div>
+
+                <div class="value-card">
+                    <img alt="Global" src="@Url.Content("~/Content/images/icon-globe.svg")" />
+                    <h4>Global</h4>
+                    <p>From city breaks to remote escapes, we’ve got you covered.</p>
+                </div>
+
+                <div class="value-card">
+                    <img alt="Premium" src="@Url.Content("~/Content/images/icon-spark.svg")" />
+                    <h4>Premium</h4>
+                    <p>Polished aesthetics and smart defaults for a premium feel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const fromPicker = flatpickr("#qFrom", {
+                altInput: true,
+                altFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
+                allowInput: false,
+                onChange: function (selectedDates, dateStr) {
+                    const toInput = document.querySelector("#qTo");
+
+                    // To If it's free, automatically select the same day
+                    if (toInput && (!toInput.value || toInput.value.trim() === "")) {
+                        if (toInput._flatpickr) toInput._flatpickr.setDate(dateStr, true);
+                    }
+
+                    // To minDate = From
+                    if (toInput && toInput._flatpickr) {
+                        toInput._flatpickr.set("minDate", dateStr);
+                    }
+                }
+            });
+
+            flatpickr("#qTo", {
+                altInput: true,
+                altFormat: "d/m/Y",
+                dateFormat: "Y-m-d",
+                allowInput: false
+            });
+        });
+    </script>
+}

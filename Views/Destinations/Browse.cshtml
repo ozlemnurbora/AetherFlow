@@ -1,0 +1,28 @@
+﻿@model List<AetherFlow.Models.Destination>
+@{
+    ViewBag.Title = "Tours";
+}
+
+<h2>@ViewBag.City Tours</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No tours found for this destination.</p>
+}
+else
+{
+    <div class="cards">
+        @foreach (var t in Model)
+        {
+            <a class="card"
+               href="@Url.Action("Details","Destinations", new { id = t.Id })"
+               style="text-decoration:none; color:inherit;">
+                <img src="@Url.Content("~/Content/images/" + t.ImageUrl)"
+                     alt="@t.TourName" />
+                <h4>@t.TourName</h4>
+                <p>@t.StartDate.ToShortDateString() - @t.EndDate.ToShortDateString()</p>
+                <p><b>$@t.Price</b></p>
+            </a>
+        }
+    </div>
+}

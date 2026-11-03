@@ -1,0 +1,224 @@
+﻿@model IEnumerable<AetherFlow.Models.Booking>
+
+@{
+    ViewBag.Title = "My Bookings";
+}
+
+<style>
+    :root {
+        --af-primary: #0ea5e9;
+        --af-primary2: #0284c7;
+        --af-soft: #e0f2fe;
+        --af-border: #eef2f7;
+        --af-text: #0f172a;
+        --af-muted: #64748b;
+    }
+
+    .b-wrap {
+        max-width: 1100px;
+        margin: 28px auto;
+        padding: 0 15px;
+    }
+
+    .b-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+        .b-head h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--af-text);
+        }
+
+        .b-head p {
+            margin: 6px 0 0;
+            color: var(--af-muted);
+            font-weight: 600;
+        }
+
+    .b-card {
+        background: #fff;
+        border: 1px solid var(--af-border);
+        border-radius: 18px;
+        box-shadow: 0 10px 24px rgba(2,132,199,.06);
+        overflow: hidden;
+        margin-bottom: 14px;
+    }
+
+    .b-top {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .code {
+        font-weight: 1000;
+        color: var(--af-text);
+    }
+
+    .meta {
+        color: var(--af-muted);
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .total {
+        font-weight: 1000;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg,var(--af-primary),var(--af-primary2));
+        color: #fff;
+    }
+
+    .b-body {
+        padding: 14px 16px;
+    }
+
+    .item {
+        display: grid;
+        grid-template-columns: 70px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+    .thumb {
+        width: 70px;
+        height: 52px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 1px solid #e5e7eb;
+        background: #f8fafc;
+    }
+
+    .t1 {
+        font-weight: 1000;
+        color: var(--af-text);
+        margin: 0;
+    }
+
+    .t2 {
+        color: var(--af-muted);
+        font-weight: 700;
+        font-size: 13px;
+        margin-top: 2px;
+    }
+
+    .price {
+        font-weight: 1000;
+        color: var(--af-text);
+    }
+
+    .empty {
+        background: rgba(14,165,233,.10);
+        border: 1px dashed rgba(14,165,233,.35);
+        color: var(--af-text);
+        border-radius: 18px;
+        padding: 16px;
+        font-weight: 800;
+    }
+
+    @@media(max-width:650px) {
+        .item {
+            display: grid;
+            grid-template-columns: 70px 1fr auto auto;
+
+            .price {
+                justify-self: start;
+            }
+        }
+
+        .vbtn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-weight: 900;
+            text-decoration: none;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: var(--af-text);
+        }
+
+            .vbtn:hover {
+                border-color: rgba(14,165,233,.55);
+                box-shadow: 0 0 0 3px rgba(14,165,233,.14);
+            }
+    }
+</style>
+
+<div class="b-wrap">
+    <div class="b-head">
+        <div>
+            <h1>My Bookings</h1>
+            <p>Your completed demo purchases.</p>
+        </div>
+        <a href="@Url.Action("Index","Home")" style="font-weight:900;color:var(--af-primary2);text-decoration:none;">
+            ← Back to Home
+        </a>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty">No bookings yet. After a checkout, your bookings will appear here.</div>
+    }
+    else
+    {
+        foreach (var b in Model.OrderByDescending(x => x.CreatedAt))
+        {
+            <div class="b-card">
+                <div class="b-top">
+                    <div>
+                        <div class="code">Booking: @b.BookingCode</div>
+                        <div class="meta">@b.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                        @if (!string.IsNullOrEmpty(b.Email))
+                        {
+                            <div class="meta">Email: @b.Email</div>
+                        }
+                    </div>
+                    <div class="total">$@b.Total.ToString("0.00")</div>
+                </div>
+
+                <div class="b-body">
+                    @foreach (var it in b.Items)
+                    {
+                        var img = string.IsNullOrEmpty(it.ImageUrl)
+                            ? Url.Content("~/Content/images/default.jpg")
+                            : Url.Content("~/Content/images/" + it.ImageUrl);
+
+                        <div class="item">
+                            <img class="thumb" src="@img" alt="@it.TourName" />
+                            <div>
+                                <p class="t1">@it.TourName</p>
+                                <div class="t2">@it.CityName • People: @it.People</div>
+                            </div>
+                            <div class="price">$@it.LineTotal.ToString("0.00")</div>
+
+                            <a class="vbtn"
+                               href="@Url.Action("Details","Destinations", new { id = it.DestinationId })">
+                                View Tour
+                            </a>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

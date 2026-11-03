@@ -1,0 +1,434 @@
+﻿@model List<AetherFlow.Models.CartItem>
+@{
+    ViewBag.Title = "Checkout";
+    decimal total = (ViewBag.Total == null) ? 0 : (decimal)ViewBag.Total;
+
+    // Demo: service/tax simulation
+    decimal serviceFee = 9.99m;
+    decimal discount = 0.00m;
+    decimal grandTotal = total + serviceFee - discount;
+}
+
+<style>
+    :root {
+        --af-primary: #0ea5e9;
+        --af-primary2: #0284c7;
+        --af-soft: #e0f2fe;
+        --af-border: #eef2f7;
+        --af-text: #0f172a;
+        --af-muted: #64748b;
+    }
+
+    .co-wrap {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+
+    .co-grid {
+        display: grid;
+        grid-template-columns: 1.5fr .9fr;
+        gap: 18px;
+        align-items: start;
+    }
+
+    .cardx {
+        background: #fff;
+        border: 1px solid var(--af-border);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(2,132,199,.06);
+    }
+
+    .cardx-h {
+        padding: 16px 18px;
+        border-bottom: 1px solid #f1f5f9;
+        font-weight: 900;
+        font-size: 18px;
+        color: var(--af-text);
+    }
+
+    .cardx-b {
+        padding: 16px 18px;
+    }
+
+    .pay-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .pill {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        background: #fff;
+    }
+
+    .radio-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        border: 2px solid var(--af-primary);
+        display: inline-block;
+        position: relative;
+    }
+
+        .radio-dot::after {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border-radius: 999px;
+            background: var(--af-primary);
+        }
+
+    .pill-title {
+        font-weight: 900;
+        color: var(--af-text);
+    }
+
+    .muted {
+        color: var(--af-muted);
+        font-size: 13px;
+    }
+
+    .formgrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .fg {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+        .fg label {
+            font-weight: 800;
+            color: var(--af-text);
+        }
+
+        .fg input, .fg select {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 10px 12px;
+            outline: none;
+        }
+
+            .fg input:focus, .fg select:focus {
+                border-color: var(--af-primary);
+                box-shadow: 0 0 0 3px rgba(14,165,233,.18);
+            }
+
+    .instal {
+        padding: 12px 14px;
+        border: 1px dashed #e5e7eb;
+        border-radius: 14px;
+        background: #fafafa;
+    }
+
+        .instal .line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .instal .line:last-child {
+                border-bottom: none;
+            }
+
+    .tag {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--af-soft);
+        color: #075985;
+        border: 1px solid #bae6fd;
+        font-weight: 900;
+        font-size: 12px;
+    }
+
+    .items {
+        margin-top: 8px;
+    }
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item b {
+            font-weight: 900;
+            color: var(--af-text);
+        }
+
+    .sumline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .sumline:last-child {
+            border-bottom: none;
+        }
+
+    .sumtotal {
+        font-size: 20px;
+        font-weight: 1000;
+        color: var(--af-text);
+    }
+
+    .btnpay {
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        padding: 14px 16px;
+        font-weight: 1000;
+        color: #fff;
+        background: linear-gradient(135deg,var(--af-primary),var(--af-primary2));
+        box-shadow: 0 10px 20px rgba(2,132,199,.18);
+        cursor: pointer;
+    }
+
+        .btnpay:hover {
+            filter: brightness(1.02);
+        }
+
+        .btnpay:active {
+            transform: translateY(1px);
+        }
+
+    .chk {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin-top: 12px;
+    }
+
+        .chk input {
+            margin-top: 3px;
+            accent-color: var(--af-primary);
+        }
+
+    .warn {
+        font-size: 12px;
+        color: var(--af-muted);
+        line-height: 1.4
+    }
+
+    a {
+        color: var(--af-primary2);
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    @@media(max-width:980px) {
+        .co-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pay-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="co-wrap">
+    <div class="co-grid">
+
+        <!-- LEFT: Payment -->
+        <div>
+            <div class="cardx">
+                <div class="cardx-h">Payment Options</div>
+                <div class="cardx-b">
+
+                    <div class="pill" style="margin-bottom:14px;">
+                        <span class="radio-dot"></span>
+                        <div>
+                            <div class="pill-title">Pay by Card</div>
+                            <div class="muted">Secure card payment (Demo)</div>
+                        </div>
+                    </div>
+
+                    @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { id = "checkoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="pay-row">
+                            <!-- Card Details -->
+                            <div class="cardx" style="border-radius:14px; box-shadow:none;">
+                                <div class="cardx-h" style="border-bottom:1px solid #f1f5f9; font-size:16px;">Card Details</div>
+                                <div class="cardx-b">
+                                    <div class="fg">
+                                        <label>Card Number</label>
+                                        <input name="cardNumber" placeholder="1234 5678 9012 3456" required />
+                                    </div>
+
+                                    <div class="formgrid">
+                                        <div class="fg">
+                                            <label>Expiry (Month)</label>
+                                            <select name="expMonth" required>
+                                                @for (int m = 1; m <= 12; m++)
+                                                {
+                                                    <option value="@m">@m.ToString("00")</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="fg">
+                                            <label>Year</label>
+                                            <select name="expYear" required>
+                                                @for (int y = DateTime.Now.Year; y <= DateTime.Now.Year + 10; y++)
+                                                {
+                                                    <option value="@y">@y</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="formgrid">
+                                        <div class="fg">
+                                            <label>CVV</label>
+                                            <input name="cvv" maxlength="4" placeholder="123" required />
+                                        </div>
+                                        <div class="fg">
+                                            <label>Full Name</label>
+                                            <input name="fullName" placeholder="Your Name" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="fg" style="margin-top:10px;">
+                                        <label>Email</label>
+                                        <input name="email" type="email" placeholder="mail@example.com" required />
+                                    </div>
+
+                                    <div class="chk">
+                                        <input type="checkbox" name="secure3d" />
+                                        <div class="warn"><b>3D Secure</b> enabled (Demo)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Installments -->
+                            <div class="cardx" style="border-radius:14px; box-shadow:none;">
+                                <div class="cardx-h" style="border-bottom:1px solid #f1f5f9; font-size:16px;">Installment Options</div>
+                                <div class="cardx-b">
+                                    <div class="instal">
+                                        <div class="line">
+                                            <div style="display:flex;gap:10px;align-items:center;">
+                                                <span class="radio-dot"></span>
+                                                <b>One-time</b>
+                                            </div>
+                                            <b>$@grandTotal.ToString("0.00")</b>
+                                        </div>
+
+                                        <div class="line">
+                                            <div><span class="tag">Demo</span> 3 installments</div>
+                                            <div class="muted">$@((grandTotal/3m).ToString("0.00")) x 3</div>
+                                        </div>
+
+                                        <div class="line">
+                                            <div><span class="tag">Demo</span> 6 installments</div>
+                                            <div class="muted">$@((grandTotal/6m).ToString("0.00")) x 6</div>
+                                        </div>
+                                    </div>
+
+                                    <p class="muted" style="margin-top:10px;">
+                                        * Demo screen: no real card charge is made.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agreements -->
+                        <div class="cardx" style="margin-top:14px;">
+                            <div class="cardx-h">Agreements</div>
+                            <div class="cardx-b">
+                                <div class="chk">
+                                    <input type="checkbox" id="agree" required />
+                                    <label for="agree" class="warn">
+                                        I have read and accept the pre-information form and the distance sales agreement.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="grandTotal" value="@grandTotal" />
+
+                        <!--  Optional: left side submit button (can stay or remove) -->
+                        <!-- <button type="submit" class="btnpay" style="margin-top:14px;">Pay Now</button> -->
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Order Summary -->
+        <div class="cardx">
+            <div class="cardx-h">Order Summary</div>
+            <div class="cardx-b">
+
+                <div class="items">
+                    @foreach (var x in Model)
+                    {
+                        <div class="item">
+                            <div>
+                                <b>@x.TourName</b>
+                                <div class="muted">@x.CityName • People: @x.Quantity</div>
+                            </div>
+                            <div><b>$@((x.Price * x.Quantity).ToString("0.00"))</b></div>
+                        </div>
+                    }
+                </div>
+
+                <div style="margin-top:10px;">
+                    <div class="sumline">
+                        <span class="muted">Subtotal</span>
+                        <b>$@total.ToString("0.00")</b>
+                    </div>
+                    <div class="sumline">
+                        <span class="muted">Service / Tax (Demo)</span>
+                        <b>$@serviceFee.ToString("0.00")</b>
+                    </div>
+                    <div class="sumline">
+                        <span class="muted">Discount</span>
+                        <b>- $@discount.ToString("0.00")</b>
+                    </div>
+                    <div class="sumline" style="border-bottom:none;">
+                        <span class="muted">Total</span>
+                        <span class="sumtotal">$@grandTotal.ToString("0.00")</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:14px;">
+                    <!-- IMPORTANT: submit the correct form -->
+                    <button class="btnpay" type="button" onclick="document.getElementById('checkoutForm').submit();">
+                        Pay Now
+                    </button>
+                    <div class="muted" style="margin-top:8px;">The button submits the demo form.</div>
+                </div>
+
+                <div style="margin-top:10px;">
+                    <a href="@Url.Action("Index","Cart")">← Back to Cart</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

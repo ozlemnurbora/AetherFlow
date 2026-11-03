@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNet.Identity
+
+@if (Request.IsAuthenticated)
+{
+    string full = User.Identity.GetUserName(); // genelde email
+    string shortName = full;
+
+    if (!string.IsNullOrEmpty(full) && full.Contains("@"))
+    {
+        shortName = full.Split('@')[0];
+    }
+
+    <li>
+        @Html.ActionLink("Hello " + shortName + "!", "Index", "Manage", null, new { title = "Manage" })
+    </li>
+
+    <li>
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit"
+                    style="background:none;border:0;color:#fff;font-weight:600;cursor:pointer;padding:0;">
+                Log off
+            </button>
+        }
+    </li>
+}
+else
+{
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString().ToLower();
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString().ToLower();
+
+    <li class="@(currentController == "account" && currentAction == "register" ? "active" : "")">
+        @Html.ActionLink("Register", "Register", "Account", null, new { id = "registerLink" })
+    </li>
+
+    <li class="@(currentController == "account" && currentAction == "login" ? "active" : "")">
+        @Html.ActionLink("Log in", "Login", "Account", null, new { id = "loginLink" })
+    </li>
+}

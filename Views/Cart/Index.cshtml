@@ -1,0 +1,77 @@
+﻿@model List<AetherFlow.Models.CartItem>
+@{
+    ViewBag.Title = "Cart";
+}
+
+<div class="container" style="padding:30px 0;">
+    <h2>Your Cart</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>Your cart is empty.</p>
+        <a class="btn btn-primary" href="@Url.Action("Index","Home")">Back Home</a>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tour</th>
+                    <th>City</th>
+                    <th>People</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var x in Model)
+                {
+                    <tr>
+                        <td>@x.TourName</td>
+                        <td>@x.CityName</td>
+                        <td>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                @using (Html.BeginForm("Decrease", "Cart", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@x.DestinationId" />
+                                    <button class="btn btn-sm btn-outline-secondary" type="submit">−</button>
+                                }
+
+                                <span style="min-width:20px; text-align:center; font-weight:700;">
+                                    @x.Quantity
+                                </span>
+
+                                @using (Html.BeginForm("Increase", "Cart", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@x.DestinationId" />
+                                    <button class="btn btn-sm btn-outline-secondary" type="submit">+</button>
+                                }
+                            </div>
+                        </td>
+
+                        <td>$@x.Price</td>
+                        <td>$@(x.Price * x.Quantity)</td>
+                        <td>
+                            @using (Html.BeginForm("Remove", "Cart", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@x.DestinationId" />
+                                <button class="btn btn-danger btn-sm" type="submit">Remove</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4>Total: $@ViewBag.Total</h4>
+
+        <a class="btn btn-success"
+           href="@Url.Action("Checkout","Cart")">
+            Proceed to Checkout
+        </a>
+    }
+</div>

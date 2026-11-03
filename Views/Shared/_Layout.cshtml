@@ -1,0 +1,97 @@
+﻿@using AetherFlow.Models
+@using System.Collections.Generic
+@using System.Linq
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>@ViewBag.Title - AetherFlow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="@Url.Content("~/Content/style.css")" rel="stylesheet" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <header>
+        <div class="container topbar">
+            <a aria-label="AetherFlow Home" class="brand" href="@Url.Action("Index", "Home")">
+                <img alt="AetherFlow logo" src="@Url.Content("~/Content/images/logo.png")" />
+                <span>AetherFlow</span>
+            </a>
+
+            <nav aria-label="main">
+                <button aria-expanded="false" aria-label="Toggle menu" class="burger">
+                    <span></span><span></span><span></span>
+                </button>
+                <ul>
+                    @{
+                        string currentAction = ViewContext.RouteData.Values["action"].ToString();
+                        string currentController = ViewContext.RouteData.Values["controller"].ToString();
+
+                        var cart = Session["CART"] as List<CartItem>;
+                        int cartCount = (cart == null) ? 0 : cart.Sum(x => x.Quantity);
+                    }
+
+                    <li>
+                        @Html.ActionLink("Home", "Index", "Home", null, new { @class = (currentAction == "Index" ? "active" : "") })
+                    </li>
+
+                    <li>
+                        @Html.ActionLink("About", "About", "Home", null, new { @class = (currentAction == "About" ? "active" : "") })
+                    </li>
+
+                    <li>
+                        @Html.ActionLink("Contact", "Contact", "Home", null, new { @class = (currentAction == "Contact" ? "active" : "") })
+                    </li>
+
+                    @Html.Partial("_LoginPartial")
+
+                    <li>
+                        <a href="@Url.Action("Index","Cart")"
+                           class="@(currentController == "Cart" ? "active" : "")"
+                           style="position:relative;">
+                            <i class="fa-solid fa-cart-shopping" style="margin-right: 6px;"></i>Cart
+
+                            @if (cartCount > 0)
+                            {
+                                <span class="cart-badge">@cartCount</span>
+                            }
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container-fluid p-0">
+        @RenderBody()
+    </div>
+
+    <footer>
+        <div class="socials">
+            <a aria-label="Instagram" href="#">Instagram</a>
+            <a aria-label="Twitter / X" href="#">Twitter</a>
+            <a aria-label="YouTube" href="#">YouTube</a>
+        </div>
+        <p style="text-align:center;color:#fff;margin:0;padding:10px 0;font-weight:600;">
+            © @DateTime.Now.Year AetherFlow — Seamless Travel
+        </p>
+    </footer>
+
+    <button aria-label="Back to top" id="backToTop" title="Back to top">↑</button>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="@Url.Content("~/Scripts/script.js")"></script>
+
+    @RenderSection("scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+</body>
+</html>
