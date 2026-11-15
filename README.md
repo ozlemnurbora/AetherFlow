@@ -23,3 +23,26 @@ AetherFlow is engineered to streamline tour browsing, booking workflows, and adm
 - **Admin Management Panel:** Comprehensive CRUD capabilities for administrators to manage tours, destinations, booking requests, and administrative logs.
 - **Relational Integrity:** Structured entity-relationship design connecting users, destinations, tours, and bookings with foreign-key constraints.
 
+## Local Installation & Setup
+
+**Clone the repository:**
+```bash
+git clone https://github.com/ozlemnurbora/AetherFlow.git
+
+1. Open the solution:
+Open Visual Studio.
+Select Open a project or solution and choose the AetherFlow.sln file from the repository folder.
+
+2. Restore NuGet Packages:
+Visual Studio usually restores missing packages automatically. If not, right-click the solution in the Solution Explorer and select Restore NuGet Packages.
+
+3. Configure the Database:
+Open the Package Manager Console via Tools > NuGet Package Manager > Package Manager Console.
+Run the migration command to set up the database:
+```bash
+Update-Database
+
+4. Run the Application:
+Press F5 or click the IIS Express button to launch the web application.
+   
+
