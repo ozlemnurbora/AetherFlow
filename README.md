@@ -28,6 +28,7 @@ AetherFlow is engineered to streamline tour browsing, booking workflows, and adm
 **Clone the repository:**
 ```bash
 git clone https://github.com/ozlemnurbora/AetherFlow.git
+```
 
 1. Open the solution:
 Open Visual Studio.
@@ -39,9 +40,11 @@ Visual Studio usually restores missing packages automatically. If not, right-cli
 3. Configure the Database:
 Open the Package Manager Console via Tools > NuGet Package Manager > Package Manager Console.
 Run the migration command to set up the database:
+```bash
 Update-Database
+```
 
-4. Run the Application:
+5. Run the Application:
 Press F5 or click the IIS Express button to launch the web application.
    
 
